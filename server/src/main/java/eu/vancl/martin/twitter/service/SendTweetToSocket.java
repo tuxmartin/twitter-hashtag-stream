@@ -23,17 +23,12 @@ public class SendTweetToSocket extends Thread {
 		// tcp.disconnect();
 
 		while (true) {
-			if (!tweets.isEmpty()) {
+			if (!tweets.isEmpty() && !busy) {
 				tcp.sendMessage(tweets.poll()); // Retrieves and removes the head of this queue, or returns null if this queue is empty.
 			}
 			
 			try {
-				if (busy) { // printer is busy
-					Thread.sleep(1000); // FIXME: wait for "OK" signal from Arduino
-				} else {
-					Thread.sleep(10);
-				}
-				
+				Thread.sleep(10);				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
