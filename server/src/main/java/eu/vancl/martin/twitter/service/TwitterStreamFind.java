@@ -63,7 +63,7 @@ public class TwitterStreamFind extends Thread {
             			+ "USER= " + status.getUser().getScreenName() + "\n"
             			+ "TEXT= " + status.getText() + "\n"
             			+ "---------------------------------------";
-            	log.debug(tweet);
+            	log.info(tweet);
             	instance.addTweetToList(" @" + status.getUser().getScreenName() + ": " + status.getText());
             }
 

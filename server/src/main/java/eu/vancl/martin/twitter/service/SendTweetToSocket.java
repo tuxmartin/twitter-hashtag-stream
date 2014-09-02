@@ -1,13 +1,15 @@
 package eu.vancl.martin.twitter.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import eu.vancl.martin.twitter.start.Start;
 
 public class SendTweetToSocket extends Thread {
 
-	private List<String> tweets = new ArrayList<String>();
+	private Queue<String> tweets = new LinkedList<String>();
+	
+	private boolean busy = false;
 
 	TcpClient tcp;
 
@@ -22,23 +24,37 @@ public class SendTweetToSocket extends Thread {
 
 		while (true) {
 			if (!tweets.isEmpty()) {
-				tcp.sendMessage(tweets.get(0));
-				tweets.remove(0);
+				tcp.sendMessage(tweets.poll()); // Retrieves and removes the head of this queue, or returns null if this queue is empty.
 			}
+			
 			try {
-				Thread.sleep(10);
+				if (busy) { // printer is busy
+					Thread.sleep(1000); // FIXME: wait for "OK" signal from Arduino
+				} else {
+					Thread.sleep(10);
+				}
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	public List<String> getTweets() {
+
+	public Queue<String> getTweets() {
 		return tweets;
 	}
-	
-	public void setTweets(List<String> tweets) {
+
+	public void setTweets(Queue<String> tweets) {
 		this.tweets = tweets;
 	}
 
+	public boolean isBusy() {
+		return busy;
+	}
+
+	public void setBusy(boolean busy) {
+		this.busy = busy;
+	}
+	
+	
 }

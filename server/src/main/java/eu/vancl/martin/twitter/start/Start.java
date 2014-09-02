@@ -1,14 +1,11 @@
 package eu.vancl.martin.twitter.start;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import eu.vancl.martin.twitter.service.SendTweetToSocket;
-import eu.vancl.martin.twitter.service.TcpClient;
 import eu.vancl.martin.twitter.service.TwitterStreamFind;
 
 /* ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! 
@@ -20,7 +17,7 @@ import eu.vancl.martin.twitter.service.TwitterStreamFind;
 public class Start {
 	static final Logger log = Logger.getLogger(Start.class); 	
 
-	boolean waitForPrinter = false;
+	
 	
 	private static SendTweetToSocket sendTweet;
 	
@@ -45,19 +42,24 @@ public class Start {
 	public void tcpReceive(String input) {		
 		System.out.println("RS-232___ " + input);
 		
-		if (input.contains("BUSY")) {
-			waitForPrinter = true;			
+		if (input.contains("OK")) {
+			sendTweet.setBusy(false);	
 		}
+		
+		if (input.contains("BUSY")) {
+			sendTweet.setBusy(true);	
+		}			
 	}
 	
 	public void addTweetToList(String tweet) {				
 		// UTF-8 tweet:
-		//tcp.sendMessage("\n" + tweet + "\n");
+		//System.out.println("\n" + tweet + "\n");
 		
 		// ASCII tweet:
 		try {
 			byte[] asciiTweet = tweet.getBytes("UTF-8");
-			sendTweet.getTweets().add("\n" + new String(asciiTweet, "US-ASCII") + "\n");
+			String tweetToSend = "\n" + new String(asciiTweet, "US-ASCII") + "\n";
+			sendTweet.getTweets().add(tweetToSend);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}		
