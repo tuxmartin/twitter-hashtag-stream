@@ -21,8 +21,6 @@ static byte gwip[]  = { 192,168,1,1 };
 static byte mymac[] = { 0x74,0x2f,0x77,0x9f,0xe3,0x8b};
 byte Ethernet::buffer[900]; // tcp ip send and receive buffer
 
-char tweet[255];
-
 const char reply_OK[] PROGMEM =
    "OK\r\n"
 ;
