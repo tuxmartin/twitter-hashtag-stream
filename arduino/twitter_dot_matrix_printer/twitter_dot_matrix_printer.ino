@@ -24,8 +24,8 @@ byte Ethernet::buffer[900]; // tcp ip send and receive buffer
 const char reply_OK[] PROGMEM =
    "OK\r\n"
 ;
-const char reply_BUSY[] PROGMEM =
-   "BUSY\r\n"
+const char reply_READY[] PROGMEM =
+   "READY\r\n"
 ;
 
 void setup(){
@@ -56,18 +56,18 @@ void loop() {
         char* data = (char *) Ethernet::buffer + pos;
         ether.httpServerReplyAck(); // send ack to the request
         
+        memcpy_P(ether.tcpOffset(), reply_OK, sizeof reply_OK); // send first packet and not send the terminate flag
+        ether.httpServerReply_with_flags(sizeof reply_OK - 1,TCP_FLAGS_ACK_V);
+        
         Serial.println(*data);      
-        sendToPrinter(data); // send to LPT printer        
-            
-        //memcpy_P(ether.tcpOffset(), reply_OK, sizeof reply_OK); // send first packet and not send the terminate flag
-        //ether.httpServerReply_with_flags(sizeof reply_OK - 1,TCP_FLAGS_ACK_V);
-            
-        memcpy_P(ether.tcpOffset(), reply_OK, sizeof reply_OK); // send fiveth packet and send the terminate flag
-        ether.httpServerReply_with_flags(sizeof reply_OK - 1,TCP_FLAGS_ACK_V|TCP_FLAGS_FIN_V);
+        sendToPrinter(data); // send to LPT printer            
+
+        memcpy_P(ether.tcpOffset(), reply_READY, sizeof reply_READY); // send fiveth packet and send the terminate flag
+        ether.httpServerReply_with_flags(sizeof reply_READY - 1,TCP_FLAGS_ACK_V|TCP_FLAGS_FIN_V);
   }
 }
 
-void sendToPrinter(char* data) {
+void sendToPrinter(char* data) {  
   for (int i = 0; i < sizeof(data); i++) {
     digitalWrite(d0, bitRead(data[i],0));
     digitalWrite(d1, bitRead(data[i],1));
@@ -82,6 +82,6 @@ void sendToPrinter(char* data) {
     delay(2); // FIXME: cekani bude delat bordel s Ethernetem! http://arduino.cc/en/Tutorial/BlinkWithoutDelay
     digitalWrite(strobe, 1);
                  
-    while (digitalRead(ack) == 0) {}
-     }
+    while (digitalRead(ack) == 0) {} // FIXME: to bude delat bordel s Ethernetem!
+  }
 }
