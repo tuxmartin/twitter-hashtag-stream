@@ -10,7 +10,8 @@ import eu.vancl.martin.twitter.service.TwitterStreamFind;
 
 /* ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! 
  * Before start app run
- *    socat TCP4-LISTEN:7777,fork /dev/ttyUSB0,b9600,raw
+ *    # chmod 777 /dev/ttyUSB0    
+ *    $ socat TCP4-LISTEN:7777,fork /dev/ttyUSB0,b9600,raw
  * ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! 
  */
 
