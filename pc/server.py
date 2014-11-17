@@ -21,13 +21,20 @@ consumer_secret = "nesw5BmxVHum47KMOl5SuWNOdX5pju8WbWFwW5zvtx7WC2atwr"
 # configure the serial connections (the parameters differs on the device you are connecting to)
 ser = serial.Serial(
 	#port='/dev/ttyUSB0',
-	port='/dev/ttyS0',
+	port='/dev/ttyUSB0',
 	baudrate=9600,
 	#writeTimeout = 2,
 	parity=serial.PARITY_NONE,
 	stopbits=serial.STOPBITS_ONE,
 	bytesize=serial.EIGHTBITS
 )
+
+try: # pokud uz byl port ortevreny, zkusim ho zavrit
+	if ser.isOpen():
+		ser.close()
+except Exception, e:
+    print "error open serial port: " + str(e)
+    exit()
 
 try: 
     ser.open()
