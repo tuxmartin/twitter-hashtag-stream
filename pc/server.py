@@ -10,12 +10,30 @@ from pprint import pprint
 from datetime import datetime
 import unicodedata
 
+import serial
+
 #Variables that contains the user credentials to access Twitter API 
 access_token = "2786658612-jdwakIPHksWwS4GUEGIfYxrBuC5OdKzf7HptNh5"
 access_token_secret = "ENlq9L6mj42Z4JWiYOuasXoEnpHPmhFMAeddICQrP0eaL"
 consumer_key = "rDaFBZQFxUSTpwClJtJIP0L03"
 consumer_secret = "nesw5BmxVHum47KMOl5SuWNOdX5pju8WbWFwW5zvtx7WC2atwr"
 
+# configure the serial connections (the parameters differs on the device you are connecting to)
+ser = serial.Serial(
+	#port='/dev/ttyUSB0',
+	port='/dev/ttyS0',
+	baudrate=9600,
+	#writeTimeout = 2,
+	parity=serial.PARITY_NONE,
+	stopbits=serial.STOPBITS_ONE,
+	bytesize=serial.EIGHTBITS
+)
+
+try: 
+    ser.open()
+except Exception, e:
+    print "error open serial port: " + str(e)
+    exit()
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
@@ -41,6 +59,17 @@ class StdOutListener(StreamListener):
 
 		print asciiVystup
 
+		if ser.isOpen():
+			try:
+				#ser.flushInput() #flush input buffer, discarding all its contents
+				ser.flushOutput()#flush output buffer, aborting current output 
+				ser.write(asciiVystup)
+				ser.write("\n") # vyzkouset, jestli to je potreba!
+			except Exception, e1:
+				print "error communicating...: " + str(e1)
+		else:
+			print "cannot open serial port "
+
 		return True
 
 	def on_error(self, status):
@@ -61,5 +90,8 @@ if __name__ == '__main__':
 
 
 
-# upraveno z http://adilmoujahid.com/posts/2014/07/twitter-analytics/
+# pouzite zdroje:
+#		http://adilmoujahid.com/posts/2014/07/twitter-analytics/
+#		http://stackoverflow.com/a/15589849/1974494
+
 
