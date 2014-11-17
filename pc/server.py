@@ -12,6 +12,8 @@ import unicodedata
 
 import serial
 
+from time import sleep
+
 #Variables that contains the user credentials to access Twitter API 
 access_token = "2786658612-jdwakIPHksWwS4GUEGIfYxrBuC5OdKzf7HptNh5"
 access_token_secret = "ENlq9L6mj42Z4JWiYOuasXoEnpHPmhFMAeddICQrP0eaL"
@@ -51,7 +53,7 @@ class StdOutListener(StreamListener):
 		cas = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 		tweet = json.loads(data)
-		print tweet
+		#print tweet
 		print " "
 		#print tweet["text"]
 
@@ -60,7 +62,7 @@ class StdOutListener(StreamListener):
 		#vystup += "ID= " + str(tweet["id"]) + "\n" 
 		vystup += "USER= " + tweet["user"]["screen_name"] + "\n" 
 		vystup += "TEXT= " + tweet["text"] + "\n" 
-		vystup += "--------------------------------------"
+		#vystup += "--------------------------------------"
 
 		asciiVystup = unicodedata.normalize('NFKD', vystup).encode('ascii','ignore') # protoze jehlickova tiskarna neumi UTF-8 :-)
 
@@ -70,7 +72,12 @@ class StdOutListener(StreamListener):
 			try:
 				#ser.flushInput() #flush input buffer, discarding all its contents
 				ser.flushOutput()#flush output buffer, aborting current output 
-				ser.write(asciiVystup)
+				poslat = list(asciiVystup)
+				for x in poslat:
+					ser.write(x)
+					ser.flushOutput()
+					sleep (5.0 / 1000.0)
+				#ser.write(asciiVystup)
 				ser.write("\n") # vyzkouset, jestli to je potreba!
 			except Exception, e1:
 				print "error communicating...: " + str(e1)
@@ -92,7 +99,7 @@ if __name__ == '__main__':
 
 	#This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
 	#stream.filter(track=['python', 'javascript', 'ruby'])
-	stream.filter(track=['#linux'])
+	stream.filter(track=['#linux', '#google'])
 
 
 
