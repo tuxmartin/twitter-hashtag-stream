@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
 	#This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
 	#stream.filter(track=['python', 'javascript', 'ruby'])
-	stream.filter(track=['linux'])
+	stream.filter(track=['#linux'])
 
 
 
