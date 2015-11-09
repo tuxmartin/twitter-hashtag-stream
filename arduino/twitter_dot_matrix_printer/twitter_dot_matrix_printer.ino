@@ -11,6 +11,7 @@
 #define ack 12
 // printer
 
+// LPT pinout: http://pinouts.ru/ParallelPorts/ParallelPC_pinout.shtml
 
 void setup(){
   Serial.begin(9600);
